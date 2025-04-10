@@ -208,11 +208,31 @@ class Member extends BaseMember {
 		// delete permissions
 		ContactMemberPermissions::instance()->delete(array("member_id = ?", $this->getId()));
 		
-		// delete member objects (if they don't belong to another member)
-		$sql = "SELECT `o`.`object_id` FROM `".ObjectMembers::instance()->getTableName()."` `o` WHERE `o`.`is_optimization`=0 AND `o`.`member_id`=".$this->getId()." AND NOT EXISTS (
-			SELECT `om`.`object_id` FROM `".ObjectMembers::instance()->getTableName()."` `om` WHERE `om`.`object_id`=`o`.`object_id` AND `om`.`is_optimization`=0 AND `om`.`member_id`<>".$this->getId().")";
-		$result = DB::execute($sql);
-    	$rows = $result->fetchAll();
+		// query to find objects that are only associated to this member
+		// and are not dimension objects, reports, templates, template tasks or template milestones
+		$sql = "SELECT `o`.`object_id` 
+				FROM `".ObjectMembers::instance()->getTableName()."` `o` 
+				INNER JOIN `".Objects::instance()->getTableName()."` `obj` ON `obj`.`id`=`o`.`object_id`
+				WHERE `o`.`is_optimization`=0 
+				AND `o`.`member_id`=".$this->getId()." 
+				AND `obj`.`object_type_id` NOT IN (
+					SELECT `id` 
+					FROM `".ObjectTypes::instance()->getTableName()."`
+					WHERE `name` IN ('report', 'template', 'template_task', 'template_milestone')
+					OR `type` = 'dimension_object'
+				)
+				AND NOT EXISTS (
+					SELECT `om`.`object_id` 
+					FROM `".ObjectMembers::instance()->getTableName()."` `om` 
+					WHERE `om`.`object_id`=`o`.`object_id` 
+					AND `om`.`is_optimization`=0 
+					AND `om`.`member_id`<>".$this->getId()."
+				)";
+
+		// get the object ids
+		$rows = DB::executeAll($sql);
+		
+		// delete the objects
     	if (!is_null($rows)) {
 	    	foreach ($rows as $row) {
 	    		$obj = Objects::instance()->findById(array_var($row, 'object_id'));

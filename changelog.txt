@@ -2,6 +2,69 @@
 Changelog
 =========
 
+Since 3.11.8.0-rc4
+-----------------------------------
+bugfix: fix link object list elements without filter (#3085)
+bugfix: fix sprint backlog report (#3084)
+bugfix: qbo sync cron is including invoices that are in the trash (#3083)
+
+Since 3.11.8.0-rc3
+-----------------------------------
+bugfix: When task is set to billable correctly update the subtasks (#3080)
+
+Since 3.11.8.0-rc2
+-----------------------------------
+bugfix: qbo sync - don't link time/expenses to invoices if they are not enabled to sync (#3077)
+bugfix: fix how to obtain the table where the search has to look (#3076)
+bugfix: Add details to logs and fix non static call (#3074)
+bugfix: remove double quotes on email addresses (#3069)
+
+Since 3.11.8.0-rc1
+-----------------------------------
+bugfix: qbo expense sync sometimes not updating status (#3068)
+bugfix: tsheets sync was not included correctly in the new sync workflow, it had many bugs (#3066)
+
+Since 3.11.8.0-beta4
+-----------------------------------
+bugfix: Remove task action "Generate invoice" (#3065)
+bugfix: Use correct ID to show start and end date in tasks list (#3062)
+
+Since 3.11.8.0-beta3
+-----------------------------------
+bugfix: update generate_first_repetitions_for_task to accept mark_timestamp parameter (#3051)
+bugfix: When invoicing fixed fee tasks substitute previous invoiced amounts (#3050)
+bugfix: Enhance invoice voiding and confirmation process with improved error messages (#3046)
+bugfix: don't try to sync expenses that are not set to sync (#3043)
+bugfix: Add error handling for email size limit and update language files (#3025)
+
+Since 3.11.8.0-beta2
+-----------------------------------
+bugfix: deleting labor cat deleted template tasks (#3034)
+bugfix: fix custom properties form that removes property groups
+
+Since 3.11.8.0-beta1
+-----------------------------------
+bugfix: user is never logged out if "remember" option is used (#3028)
+bugfix: some processes updates admin last activity date (#3022)
+bugfix: In the 'cost/rev forecast' report use due date for tasks (#3030)
+bugfix: Add error handling for email size limit and update language files #3025
+
+Since 3.11.7.X
+-----------------------------------
+feature: filter properties by OT and subtype on import tool (#3019)
+feature: Refactor language files for consistent terminology (#3012)
+feature: Adds more date formats and tooltips (#3011)
+feature: Allow to change date format on invoice header (#3007)
+feature: project billing report: add new parameter for ordering time and expenses inside each project's data section (#3000)
+feature: allow to disable generic member type instantiation (#2989)
+Feature: Don't allow time recalculations based on timesheet approval (#2923)
+bugfix: tasks modules dropdown menus are not ordered alphabetically (#3001)
+
+Since 3.11.7.9
+-----------------------------------
+feature: qbo config option - don't prompt to reconnect if we are disc… (#3052)
+improvement: Replace invoice id for task in custom report using invoicerelations table (#3048)
+
 Since 3.11.7.8
 -----------------------------------
 bugfix: custom member name: differentiate custom properties retrieval based on object type (#3047)

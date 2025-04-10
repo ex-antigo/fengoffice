@@ -20,7 +20,7 @@ try {
 	$arg1 = array_var($argv, 2);
 	$usr = Contacts::instance()->findOne(array("conditions" => "user_type > 0", "order" => "user_type"));
 	$usr or die("No users found\n");
-	CompanyWebsite::instance()->logUserIn($usr);
+	CompanyWebsite::instance()->logUserIn($usr, false, false);
 	
 	$ctrl = new PluginController();
 	trim($command) or die("Command is required \n".$usage);

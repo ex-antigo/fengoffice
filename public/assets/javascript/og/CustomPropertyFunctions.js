@@ -282,11 +282,23 @@ og.saveObjectTypeCustomProperties = function(genid, save_url) {
 		save_url = og.getUrl('administration', 'save_custom_properties_for_type');
 	}
 
-	og.openLink(save_url, {
-		post: {
-			ot_id: ot,
-			custom_properties: Ext.util.JSON.encode(custom_props)
+	let params = {
+		ot_id: ot,
+		custom_properties: Ext.util.JSON.encode(custom_props)
+	};
+
+	// additional parameters of the form, can be added by any plugin
+	// exclude the ones starting with "custom_properties", they are already added in the code above
+	$(".custom-properties-admin.object-type input").not('[name^="custom_properties"]').each(function() {
+		let val = $(this).attr('value');
+		if ($(this).attr('type') == 'checkbox') {
+			val = $(this).attr('checked') == 'checked' ? 1 : 0;
 		}
+		params[$(this).attr('name')] = val;
+	});
+
+	og.openLink(save_url, {
+		post: params
 	});
 }
 

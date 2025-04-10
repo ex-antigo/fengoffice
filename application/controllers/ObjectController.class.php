@@ -927,9 +927,11 @@ class ObjectController extends ApplicationController {
 		}else if($object->getObjectTypeName() == "event"){
 			$new_date = $object->getStart();
 		}
-		foreach($reminders as $reminder){
-			$reminder->setDate($new_date);
-			$reminder->save();
+		if (isset($new_date)) {
+			foreach($reminders as $reminder){
+				$reminder->setDate($new_date);
+				$reminder->save();
+			}
 		}
 	}
 

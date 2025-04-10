@@ -507,10 +507,10 @@ class TemplateController extends ApplicationController {
 									// if the hook didn't override the definition of the parameter then continue with the usual procedure
 									
 									$param = trim($propValueParams[$objInfo][$property]);
-									$operation = trim(array_var($propValueOperation[$objInfo], $property));
-									$amount = trim(array_var($propValueAmount[$objInfo], $property));
-									$unit = trim(array_var($propValueUnit[$objInfo], $property));
-									$var_unit = trim(array_var($propValueVarUnit[$objInfo], $property));
+									$operation = trim(array_var(array_var($propValueOperation, $objInfo, []), $property));
+									$amount = trim(array_var(array_var($propValueAmount, $objInfo, []), $property));
+									$unit = trim(array_var(array_var($propValueUnit, $objInfo, []), $property));
+									$var_unit = trim(array_var(array_var($propValueVarUnit, $objInfo, []), $property));
 
 									$amount_type = trim(array_var($propValueNumType[$objInfo], $property));
 									if ($amount_type != '' && $amount_type != 'fixed') {

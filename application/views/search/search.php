@@ -86,7 +86,7 @@ $disabled = $type_object ? false : true;
 		</div>
 	</div>
     <?php }else{?>
-        <?php if($msg_advanced){?>
+        <?php if(isset($msg_advanced)){?>
         <div id="<?php echo $genid; ?>Search" class="search-container">
                 <div class="no-results">
                         <?php echo lang("no search result");?>

@@ -913,7 +913,7 @@ class ExternalCalendarController extends ApplicationController {
                 $contact = Contacts::instance()->findById($user->getContactId());
 				// don't process calendars of disabled users
 				if ($contact instanceof Contact && $contact->isUser() && !$contact->getDisabled()) {
-					CompanyWebsite::instance()->logUserIn($contact);
+					CompanyWebsite::instance()->logUserIn($contact, false, false);
 					ExternalCalendarController::export_google_calendar_for_user($user);
 					CompanyWebsite::instance()->logUserOut();
 				}

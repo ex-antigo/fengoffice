@@ -569,7 +569,6 @@ function get_report_grouped_values_as_array($group_data, $results, $report, $lev
 
 			$rows = array_var($results, 'rows');
 			$pagination = array_var($results, 'pagination');
-			$tz_offset = array_var($row, 'tz_offset');
 			$ot = ObjectTypes::instance()->findById($report->getReportObjectTypeId());
 
 			if (!$report->getColumnValue("hide_group_details")) {
@@ -616,7 +615,8 @@ function get_report_grouped_values_as_array($group_data, $results, $report, $lev
 						$date_format = is_numeric($col) ? "Y-m-d" : user_config_option('date_format');
 						$date_custom = $report->getColumnValue('date_format');
 						$date_format = $date_custom != '' ? $date_custom : $date_format;
-						
+
+						$tz_offset = array_var($row, 'tz_offset');
 						if($val_type == DATA_TYPE_DATETIME && !($value instanceof DateTimeValue)){
 							if($value == ''){
 								$formatted_val = ' ';

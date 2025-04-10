@@ -18,7 +18,7 @@ class MailUtilities {
 	static $special_imap_folder_codes = array("\\All", "\\Archive", "\\Drafts", "\\Flagged", "\\Junk", "\\Sent", "\\Trash", "\\Important");
 
 	function getSpecialImapFolderCodes() {
-		return $this->special_imap_folder_codes;
+		return self::$special_imap_folder_codes;
 	}
 
 	static function getmails($accounts = null, &$err, &$succ, &$errAccounts, &$mailsReceived, $maxPerAccount = 0) {
@@ -178,13 +178,14 @@ class MailUtilities {
 		if ($field) {
 			foreach($field as $add) {
 				if (!empty($f))
-				$f = $f . ', ';
+					$f = $f . ', ';
 				$address = trim(array_var($add, "address", ''));
 				if (strpos($address, ' '))
 				$address = substr($address,0,strpos($address, ' '));
 				$f = $f . $address;
 			}
 		}
+		$f = str_replace('"', "", $f);
 		return $f;
 	}
 
@@ -209,6 +210,7 @@ class MailUtilities {
 				$str = substr($content, $ini, strpos($content, ">", $ini) - $ini);
 				$ini = strpos($str, ":") + 1;
 				$address[0]['name'] = trim(substr($str, $ini, strpos($str, "<") - $ini));
+				$address[0]['name'] = str_replace('"', '', $address[0]['name']);
 				$address[0]['address'] = trim(substr($str, strpos($str, "<") + 1));
 			}
 		}
@@ -760,6 +762,7 @@ class MailUtilities {
 					foreach ($address_hdr as $hdr) {
 						if (isset($headers[$hdr]) && strpos($headers[$hdr], ';') !== false) {
 							$headers[$hdr] = str_replace(';', ',', $headers[$hdr]);
+							$headers[$hdr] = str_replace('"', '', $headers[$hdr]);
 							if (str_ends_with($headers[$hdr], ',')) $headers[$hdr] = substr($headers[$hdr], 0, -1);
 							$decoded[$msg]['Headers'] = $headers;
 						}
@@ -956,6 +959,7 @@ class MailUtilities {
 				if (count($addr) > 1) {
 					$address = trim($addr[1]);
 					$name = $address != trim($addr[0]) ? trim($addr[0]) : "";
+					$name = str_replace('"', "", $name);
 				} else {
 					$address = trim($addr[0]);
 				}
@@ -1246,6 +1250,7 @@ class MailUtilities {
 		if (!is_array($to)) return $to;
 		$return = array();
 		foreach ($to as $elem){
+			$elem = trim(str_replace('"', '', $elem));
 			$mail= preg_replace("/.*\<(.*)\>.*/", "$1", $elem, 1);
 			$nam = explode('<', $elem);
 			$return[]= array(trim($nam[0]),trim($mail));

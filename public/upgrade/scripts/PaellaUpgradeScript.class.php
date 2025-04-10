@@ -39,7 +39,7 @@ class PaellaUpgradeScript extends ScriptUpgraderScript {
 	function __construct(Output $output) {
 		parent::__construct($output);
 		$this->setVersionFrom('3.4.4.52');
-		$this->setVersionTo('3.11.7.9');
+		$this->setVersionTo('3.11.8.0');
 	} // __construct
 
 	function getCheckIsWritable() {
@@ -1140,14 +1140,6 @@ class PaellaUpgradeScript extends ScriptUpgraderScript {
 		}
 
 
-		if (version_compare($installed_version, '3.11.3.0-beta1') < 0) {
-      if (!$this->checkColumnExists($t_prefix."application_logs", "is_mail_rule", $this->database_connection)) {
-			  $upgrade_script .= "
-			  ALTER TABLE `".$t_prefix."application_logs`
-			  ADD COLUMN `is_mail_rule` TINYINT(1) DEFAULT 0;
-			  ";
-      }
-		}
 
 		// Adds reopen task permission 
 		if (version_compare($installed_version, '3.11.3.0-rc2') < 0) {

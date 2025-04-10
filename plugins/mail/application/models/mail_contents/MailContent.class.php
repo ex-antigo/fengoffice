@@ -79,27 +79,27 @@ class MailContent extends BaseMailContent {
 	}
 	
 	function getTo() {
-		return $this->getMailData()->getTo();
+		return str_replace('"', '', $this->getMailData()->getTo());
 	}
 	
 	function setTo($to) {
-		return $this->getMailData()->setTo($to);
+		return $this->getMailData()->setTo(str_replace('"', '', $to));
 	}
 	
 	function getCc() {
-		return $this->getMailData()->getCc();
+		return str_replace('"', '', $this->getMailData()->getCc());
 	}
 	
 	function setCc($cc) {
-		return $this->getMailData()->setCc($cc);
+		return $this->getMailData()->setCc(str_replace('"', '', $cc));
 	}
 	
 	function getBcc() {
-		return $this->getMailData()->getBcc();
+		return str_replace('"', '', $this->getMailData()->getBcc());
 	}
 	
 	function setBcc($bcc) {
-		return $this->getMailData()->setBcc($bcc);
+		return $this->getMailData()->setBcc(str_replace('"', '', $bcc));
 	}
 	
 	function getBodyHtml() {
