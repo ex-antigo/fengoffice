@@ -194,8 +194,8 @@ final class CompanyWebsite {
 	 * @param boolean $remember
 	 * @return null
 	 */
-	function logUserIn(Contact $user, $remember = false) {
-		$this->setLoggedUser($user, $remember, true);
+	function logUserIn(Contact $user, $remember = false, $set_last_activity_time = true) {
+		$this->setLoggedUser($user, $remember, $set_last_activity_time);
 	} // logUserIn
 
 	/**
@@ -210,6 +210,7 @@ final class CompanyWebsite {
 		Cookie::unsetValue('id');
 		Cookie::unsetValue('token');
 		Cookie::unsetValue('remember');
+		Cookie::unsetValue('expiration');
 		
 		//check if thers a cross domain cookie
 		$user_id       = Cookie::getValue('idCross');
@@ -308,16 +309,82 @@ final class CompanyWebsite {
 		}
 
 		if ($set_cookies) {
+			// set cookies for $expiration seconds
+
+			// if user is already logged in, check if cookies are about to expire
+			// and if so, set new cookies with the same expiration time
+			// (this is done so that user doesn't get logged out after one hour)
+			// if cookies are not about to expire, then don't set new cookies
+			// (this is done so that cookies are not overwritten every time user opens a new page)
+
+			/**
+			 * Set cookies if user is not already logged in or if cookies are about to expire
+			 * (this is done so that user doesn't get logged out after one hour)
+			 */
 			$expiration = $remember ? REMEMBER_LOGIN_LIFETIME : SESSION_LIFETIME;
-	
-			Cookie::setValue('id', $user->getId(), $expiration);
-			Cookie::setValue('token', $user->getTwistedToken(), $expiration);
-	
-			if($remember) {
-				Cookie::setValue('remember', 1, $expiration);
+
+			// get expiration timestamp from cookies
+			$current_expiration_ts = Cookie::getValue('expiration');
+			if (!$current_expiration_ts) {
+				// if cookie is not set then set it, alongside with new expiration date
+				$need_to_set_cookies = true;
+				$cookie_is_about_to_expire = false;
+
 			} else {
-				Cookie::unsetValue('remember');
-			} // if
+				$need_to_set_cookies = false;
+				$cookies_present = false;
+
+				// check if cookie is about to expire
+				$cookie_is_about_to_expire = false;
+	
+				// check if user is already logged in
+				$user_id = Cookie::getValue('id');
+				$twisted_token = Cookie::getValue('token');
+				if (!empty($user_id) && !empty($twisted_token)) {
+					$user = Contacts::instance()->findById($user_id);
+					if ($user instanceof Contact && $user->isValidToken($twisted_token)) {
+						$cookies_present = true;
+					} 
+	
+					if ($cookies_present) {
+						// check if cookie is about to expire
+						$now = DateTimeValueLib::now();
+						if ($now->getTimestamp() + SESSION_LIFETIME > $current_expiration_ts) {
+							$cookie_is_about_to_expire = true;
+						}
+					}
+				}
+				
+				if (!$cookies_present || $cookie_is_about_to_expire) {
+					// if user is not logged in or cookie is about to expire then set new cookies
+					$need_to_set_cookies = true;
+					if ($cookie_is_about_to_expire) {
+						// if cookie is about to expire expand expiration time to one more hour
+						$expiration = SESSION_LIFETIME;
+					}
+				}
+			}
+
+	
+			// set cookies
+			if ($need_to_set_cookies) {
+
+				// get expiration date timestamp to store in cookie
+				$expiration_dt = DateTimeValueLib::now();
+				$expiration_dt->advance($expiration);
+				$expiration_ts = $expiration_dt->getTimestamp();
+
+				// store the cookies
+				Cookie::setValue('id', $user->getId(), $expiration);
+				Cookie::setValue('token', $user->getTwistedToken(), $expiration);
+				Cookie::setValue('expiration', $expiration_ts, $expiration);
+		
+				if($remember) {
+					Cookie::setValue('remember', 1, $expiration);
+				} else {
+					Cookie::unsetValue('remember');
+				} // if
+			}
 		}
 
 		$this->logged_user = $user;

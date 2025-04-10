@@ -44,7 +44,7 @@ abstract class BaseMailData extends DataObject {
 	 * @return string
 	 */
 	function getTo() {
-		return $this->getColumnValue('to');
+		return str_replace('"', '', $this->getColumnValue('to'));
 	} // getTo()
 
 	/**
@@ -55,7 +55,7 @@ abstract class BaseMailData extends DataObject {
 	 * @return boolean
 	 */
 	function setTo($value) {
-		return $this->setColumnValue('to', $value);
+		return $this->setColumnValue('to', str_replace('"', '', $value));
 	} // setTo()
 	
 	/**
@@ -66,7 +66,7 @@ abstract class BaseMailData extends DataObject {
 	 * @return string
 	 */
 	function getCc() {
-		return $this->getColumnValue('cc');
+		return str_replace('"', '', $this->getColumnValue('cc'));
 	} // getCc()
 
 	/**
@@ -77,7 +77,7 @@ abstract class BaseMailData extends DataObject {
 	 * @return boolean
 	 */
 	function setCc($value) {
-		return $this->setColumnValue('cc', $value);
+		return $this->setColumnValue('cc', str_replace('"', '', $value));
 	} // setCc()
 	
 	/**
@@ -88,7 +88,7 @@ abstract class BaseMailData extends DataObject {
 	 * @return string
 	 */
 	function getBcc() {
-		return $this->getColumnValue('bcc');
+		return str_replace('"', '', $this->getColumnValue('bcc'));
 	} // getBcc()
 
 	/**
@@ -99,7 +99,7 @@ abstract class BaseMailData extends DataObject {
 	 * @return boolean
 	 */
 	function setBcc($value) {
-		return $this->setColumnValue('bcc', $value);
+		return $this->setColumnValue('bcc', str_replace('"', '', $value));
 	} // setBcc()
 
 	/**

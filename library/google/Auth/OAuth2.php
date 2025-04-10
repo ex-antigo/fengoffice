@@ -354,7 +354,7 @@ class Google_Auth_OAuth2 extends Google_Auth_Abstract
       $this->token['expires_in'] = $token['expires_in'];
       $this->token['created'] = time();
     } else {
-      throw new Google_Auth_Exception("Error refreshing the OAuth2 token, message: '$body'", $code);
+      throw new Google_Auth_Exception("Error refreshing the OAuth2 token, message: '$body'" . ' - with params: ' . json_encode($params), $code);
     }
   }
 

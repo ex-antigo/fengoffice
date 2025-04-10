@@ -550,10 +550,10 @@ class MailController extends ApplicationController {
 			 						flash_error(lang('file dnx'));
 			 						$err++;
 			 					} // if
-//			 					if(!$file->canDownload(logged_user())) {
-//			 						flash_error(lang('no access permissions'));
-//			 						$err++;
-//			 					} // if
+		//			 					if(!$file->canDownload(logged_user())) {
+		//			 						flash_error(lang('no access permissions'));
+		//			 						$err++;
+		//			 					} // if
 								$project_files_attachments[] = $file;
 
 			 					$attachments[] = array(
@@ -810,10 +810,12 @@ class MailController extends ApplicationController {
 	                                $this->send_outbox_mails(null,$account,$from_time);
 	                            }
                         	}
-							$called_from = array_var($mail_data['additional_info'], 'called_from');
-							if ($called_from != '') {
-								$original_email = MailContents::instance()->findById(array_var($mail_data['additional_info'], 'original_mail_id'));
-								ApplicationLogs::createLog($original_email, $called_from, false, null, true, $mail->getId());
+							if(array_var($mail_data, 'additional_info')){
+								$called_from = array_var($mail_data['additional_info'], 'called_from');
+								if ($called_from != '') {
+									$original_email = MailContents::instance()->findById(array_var($mail_data['additional_info'], 'original_mail_id'));
+									ApplicationLogs::createLog($original_email, $called_from, false, null, true, $mail->getId());
+								}
 							}
 
                         } catch (Exception $e) {
@@ -895,6 +897,7 @@ class MailController extends ApplicationController {
 		return $attachments;
 	}
 
+	//Esta funcion
 	function send_outbox_mails($user=null,$user_account=null,$from_time=null) {
 		if(is_null($user)){
 			$user = logged_user();
@@ -1072,6 +1075,9 @@ class MailController extends ApplicationController {
 					} catch (Exception $e) {
 						// actions are taken below depending on the sentOK variable
 						Logger::log("Could not send email: ".$e->getMessage()."\nmail_id=".$mail->getId());
+						if (strpos($e->getMessage(), '552') !== false) {
+							flash_error(lang("Error: The email size exceeds the server's allowed limit."));
+						}
 						$sentOK = false;
 					}
 
@@ -1377,8 +1383,6 @@ class MailController extends ApplicationController {
 						unset($attach['name']);
 					}
 				}
-			} else {
-
 			}
 			ini_set('memory_limit', $old_memory_limit);
 		} else {

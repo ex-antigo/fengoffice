@@ -48,5 +48,6 @@
 	'basic' => 'Basic',
 	'oauth2' => 'External provider',
 	'auth method' => 'Authentication method',
-	'use oauth2' => 'Use OAUTH2'
+	'use oauth2' => 'Use OAUTH2',
+	'Error: The email size exceeds the server allowed limit.' => 'The total size of the attachment/s exceeds the allowed server limit.',
 );

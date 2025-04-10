@@ -1706,6 +1706,17 @@ class MemberController extends ApplicationController {
 					// ensure that no user is going to be trashed
 					$object_ids_to_keep = array_merge($object_ids_to_keep, $user_ids);
 
+					// ensure that no reports, templates, template tasks or template milestones are going to be trashed
+					$template_and_report_obj_rows = DB::executeAll("
+						SELECT id FROM ".TABLE_PREFIX."objects 
+						WHERE object_type_id IN (
+							SELECT id FROM ".TABLE_PREFIX."object_types 
+							WHERE name IN ('template', 'report', 'template_task', 'template_milestone')
+						);
+					");
+					$template_and_report_obj_ids = $template_and_report_obj_rows ? array_flat($template_and_report_obj_rows) : array();
+					$object_ids_to_keep = array_merge($object_ids_to_keep, $template_and_report_obj_ids);
+
 					// also exclude contacts that are used in any custom property
 					$contact_ids_in_cp_sql = "
 						SELECT DISTINCT cpv.`value` 
@@ -2241,7 +2252,7 @@ class MemberController extends ApplicationController {
 		
 		if ($dimension instanceof Dimension){
 
-			$object_Types = array();
+			$object_types = array();
 			$parent_member_id = array_var($_GET, 'parent_member_id');
 			
 			$parent_member = Members::instance()->findById($parent_member_id);
@@ -2292,14 +2303,20 @@ class MemberController extends ApplicationController {
 			$urls = array();
 			foreach ($editUrls as $ot_id => $url) {
 				$ot = array_var($obj_types, $ot_id);
-				if ($ot instanceof ObjectType) {
-					$link_text = ucfirst(Members::getTypeNameToShowByObjectType($dimension_id, $ot->getId()));
-					$iconcls = $ot->getIconClass();
-				} else {
-					$link_text = lang('new');
-					$iconcls = "";
+
+				$can_create_object_type = true;
+				Hook::fire('can_create_object_type', array('ot' => $ot), $can_create_object_type);
+				
+				if ($can_create_object_type) {
+					if ($ot instanceof ObjectType) {
+						$link_text = ucfirst(Members::getTypeNameToShowByObjectType($dimension_id, $ot->getId()));
+						$iconcls = $ot->getIconClass();
+					} else {
+						$link_text = lang('new');
+						$iconcls = "";
+					}
+					$urls[] = array('link_text' => $link_text, 'url' => $url, 'iconcls' => $iconcls);
 				}
-				$urls[] = array('link_text' => $link_text, 'url' => $url, 'iconcls' => $iconcls);
 			}
 			
 			Hook::fire('member_quick_add_urls', array('dimension' => $dimension, 'object_types' => $object_types, 'parent_member' => $parent_member), $urls);

@@ -15,7 +15,9 @@ if(!defined('ENVIRONMENT_PATH')) define('ENVIRONMENT_PATH', dirname(__FILE__));
 if(!ini_get('session.auto_start') || (strtolower(ini_get('session.auto_start')) == 'off')) {
 	 
 	if ( !isset($_GET['avoid_session']) || (isset($_GET['avoid_session']) && !$_GET['avoid_session']) ){
-		session_start(); // Start the session
+		if(session_id() == "") {
+			session_start(); // Start the session
+		}
 	}
 }
 

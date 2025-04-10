@@ -48,4 +48,5 @@
 	'oauth2' => 'Proveedor OAUTH2',
 	'auth method' => 'Método de autenticación',
 	'use oauth2' => 'Usar OAUTH2',
+	'Error: The email size exceeds the server allowed limit.' => 'El tamaño total de los archivos adjuntos excede el límite permitido por el servidor.',
 );

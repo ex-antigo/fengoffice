@@ -26,6 +26,28 @@ class ConfigController extends ApplicationController {
 	} // __construct
 
 	/**
+	 * AJAX function to get a config option value
+	 *
+	 * @param void
+	 * @return null
+	 */
+	function get_config_option_value() {
+		ajx_current("empty");
+		
+		// Get the option name
+		$option_name = array_var($_REQUEST, 'name');
+		
+		// Get the option value
+		$option_value = '';
+		if ($option_name != '') {
+			$option_value = config_option($option_name);
+		}
+		
+		// Return the option value as extra data
+		ajx_extra_data(array('opt_val' => $option_value));
+	}
+
+	/**
 	 * Show and process config category form
 	 *
 	 * @param void

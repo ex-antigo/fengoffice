@@ -1984,7 +1984,11 @@ function pdf_convert_and_download($html_filename, $download_filename=null, $orie
 	}
 }
 
-function convert_to_pdf($html_to_convert, $orientation='Portrait', $genid, $page_size="A4", $zoom='', $html_header_footer = array()) {
+function convert_to_pdf($html_to_convert, $orientation='Portrait', $genid = null, $page_size="A4", $zoom='', $html_header_footer = array()) {
+	if (!$genid) {
+		throw new Exception('genid is required');
+	}
+	
 	$pdf_filename = null;
 	
 	if(is_exec_available()){

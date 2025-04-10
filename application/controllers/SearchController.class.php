@@ -310,7 +310,7 @@ class SearchController extends ApplicationController {
 			
 			if($type_object){
 				$object_table = ObjectTypes::instance()->findById($type_object);
-				$table = $object_table->getTableName();				
+				$table = $object_table->getObjectTableName();				
 			}
 
 			$sql = "
@@ -427,7 +427,7 @@ class SearchController extends ApplicationController {
 		
 		//Ajax
 		if (!$total && !$advanced){
-			if($_POST && count($search_results < 0)){
+			if($_POST && count($search_results) < 0){
 				tpl_assign('msg_advanced', true);
 			}else{
 				$this->setTemplate('no_results');
